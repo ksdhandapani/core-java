@@ -1,0 +1,363 @@
+//////////////////////
+Static Keyword in Java 
+//////////////////////
+
+- The Static keyword in java is mainly used for memory management.
+- We can apply static keyword with variables, methods, blocks and nested classes. 
+- The static keyword belongs to the class rather than an instance of the class. 
+
+The static keyword can be applied with 
+
+1. Variable (Known as class variable)
+2. Method (Known as class method)
+3. Block 
+4. Nested/Inner class 
+
+1. Static Variable
+------------------ 
+
+- The static keyword is used to refer to the common property of all objects (Which is not unique for each object).
+- The static variable gets memory only once in the class area at the time of class loading. 
+
+>>> Advantage of Static Variable 
+
+- It makes our program memory efficient. 
+
+Example: 
+
+Suppose there are 100 employees in a company, so all the instance data members will get memory each time when the object is created, All the employees will have unique employeeId and emailAddress but the companyName will be the same for all 100 employees, If we are not declaring that common variable as static it will get memory for 100 times but If we make it as static, it will get memory once and that property will be shared to all the objects.
+
+Example Program:
+
+class Employee 
+{
+	String employeeId;
+	String emailAddress;
+	static String companyName = "DSoft";
+
+	Employee(String employeeId, String emailAddress)
+	{
+		this.employeeId = employeeId;
+		this.emailAddress = emailAddress;
+	}
+
+	void displayEmployeeInfo()
+	{
+		System.out.println("Employee Id : "+employeeId+", Email Address : "+emailAddress+", Company Name: "+companyName);
+	}
+}
+
+public class StaticKeywordExample1
+{
+	public static void main(String[] args)
+	{
+		Employee emp1=new Employee("dhandapani.sudhakar","dhandapani.sudhakar@dsoft.com");
+		emp1.displayEmployeeInfo();
+		Employee emp2=new Employee("mallini.baskar","mallini.baskar@dsoft.com");
+		emp2.displayEmployeeInfo();
+
+	}
+}
+
+Output:
+
+javac StaticKeywordExample1.java
+java StaticKeywordExample1
+
+Employee Id : dhandapani.sudhakar, Email Address : dhandapani.sudhakar@dsoft.com, Company Name: DSoft
+Employee Id : mallini.baskar, Email Address : mallini.baskar@dsoft.com, Company Name: DSoft
+
+2. Static Method
+---------------- 
+
+- A static method belongs to a class rather than the instance of a class. 
+- A static method can be invoked without the need of creating an instance of the class. 
+- A static method can access static data members and can change their value.
+
+Example:
+
+class Employee 
+{
+	String employeeId;
+	String emailAddress;
+	static String companyName = "DSoft";
+
+	Employee(String employeeId, String emailAddress)
+	{
+		this.employeeId = employeeId;
+		this.emailAddress = emailAddress;
+	}
+
+	static void changeCompanyName()
+	{
+		companyName = "KSoft";
+	}
+
+	void displayEmployeeInfo()
+	{
+		System.out.println("Employee Id : "+employeeId+", Email Address : "+emailAddress+", Company Name: "+companyName);
+	}
+}
+
+public class StaticKeywordExample2
+{
+	public static void main(String[] args)
+	{
+		Employee.changeCompanyName(); // Calling the static method using class name
+		Employee emp1=new Employee("dhandapani.sudhakar","dhandapani.sudhakar@dsoft.com");
+		emp1.displayEmployeeInfo();
+		Employee emp2=new Employee("mallini.baskar","mallini.baskar@dsoft.com");
+		emp2.displayEmployeeInfo();
+
+	}
+}
+
+Output:
+
+javac StaticKeywordExample2.java
+java StaticKeywordExample2
+
+Employee Id : dhandapani.sudhakar, Email Address : dhandapani.sudhakar@dsoft.com, Company Name: KSoft
+Employee Id : mallini.baskar, Email Address : mallini.baskar@dsoft.com, Company Name: KSoft
+
+>>> Restrictions in static method 
+
+- The static method cannot access non-static data members or call the non-static method directly. 
+- this and super keywords cannot be used in a static context. 
+
+Example: Compile Time Error when trying to access non-static data member from a static method
+
+class Employee 
+{
+	String employeeId;
+	String emailAddress;
+	static String companyName = "DSoft";
+	static void changeCompanyName()
+	{
+		companyName = "KSoft";
+		System.out.println(employeeId); // Trying to access and print non-static data member of a class
+	}
+}
+
+public class StaticKeywordExample3
+{
+	public static void main(String[] args)
+	{
+		Employee.changeCompanyName(); // Calling the static method using class name
+	}
+}
+
+CT Error:
+
+javac StaticKeywordExample3.java
+
+StaticKeywordExample3.java:9: error: non-static variable this cannot be referenced from a static context
+                System.out.println(this.employeeId); // Trying to access and print non-static data member of a class
+                                   ^
+1 error
+
+Example: Compile Time Error when tyring to access non-static method from a static method 
+
+class Employee 
+{
+	String employeeId;
+	String emailAddress;
+	static String companyName = "DSoft";
+	static void changeCompanyName()
+	{
+		companyName = "KSoft";
+		sayHello(); // Trying to access and call non-static method from a static method
+	}
+
+	public void sayHello()
+	{
+		System.out.println("Hello...");
+	}
+}
+
+public class StaticKeywordExample4
+{
+	public static void main(String[] args)
+	{
+		Employee.changeCompanyName(); // Calling the static method using class name
+	}
+}
+
+CT Error:
+
+javac StaticKeywordExample4.java
+StaticKeywordExample4.java:9: error: non-static method sayHello() cannot be referenced from a static context
+                sayHello(); // Trying to access and call non-static method from a static method
+                ^
+1 error
+
+3. Static Block 
+---------------
+
+- Static block is used to initialize the static data members. 
+- In a program, we can have two kinds of blocks, static block and non-static block (instance block).
+- Non-static block will be executed only when we create an object for that class, otherwise non-static block will not be executed.
+- It is executed before the main method at the time of classloading.
+- Real-time examples:
+	- We may have a requirement to load the database driver during class loading, at that time we can have a static variable for that database driver and initialize it in the static block.
+	- For testing purposes, we may have a collection object as a static member and initialize it in the static block. 
+
+Example:
+
+class Employee 
+{
+	String employeeId;
+	String emailAddress;
+	static String companyName = "DSoft";
+	
+	// non-static block 
+	{
+		System.out.println("Non static block executed");
+	}
+	// static block 
+	static
+	{
+		System.out.println("Static block executed");
+		companyName = "DSoft";
+	}
+
+	Employee(String employeeId, String emailAddress)
+	{
+		this.employeeId = employeeId;
+		this.emailAddress = emailAddress;
+	}
+
+	void displayEmployeeInfo()
+	{
+		System.out.println("Employee Id : "+employeeId+", Email Address : "+emailAddress+", Company Name: "+companyName);
+	}
+}
+
+public class StaticKeywordExample5
+{
+	public static void main(String[] args)
+	{
+		Employee employee = new Employee("dhandapani.sudhakar","dhandapani.sudhakar@dsoft.com");
+		employee.displayEmployeeInfo();
+	}
+}
+
+Output:
+
+javac StaticKeywordExample5.java
+java StaticKeywordExample5
+
+Static block executed
+Non static block executed
+Employee Id : dhandapani.sudhakar, Email Address : dhandapani.sudhakar@dsoft.com, Company Name: DSoft
+
+Example:
+
+import java.util.*;
+
+public class StaticKeywordExample6Block 
+{
+	public static Map<Integer, String> hashMap = new HashMap<Integer, String>();
+    public static Set<String> hashSet = new HashSet<String>();
+    
+    static
+    {
+    	System.out.println("Executing static block");
+        hashMap.put(1, "One");
+        hashMap.put(2, "Two");    
+        hashMap.put(3, "Three");
+        
+        hashSet.add("a");
+        hashSet.add("b");
+        hashSet.add("c");
+    }
+
+    public static void main(String[] args)
+	{
+		System.out.println("Executing Main method");
+		StaticKeywordExample6Block obj = new StaticKeywordExample6Block();
+        System.out.println("HashMap values : "+ hashMap);
+        System.out.println("HashSet values : "+ hashSet);
+	}
+}
+
+Output:
+
+javac StaticKeywordExample6Block.java
+java StaticKeywordExample6Block
+
+Executing static block
+Executing Main method
+HashMap values : {1=One, 2=Two, 3=Three}
+HashSet values : [a, b, c]
+
+4. Static Inner/Nested class
+----------------------------
+
+>>> Inner/Nested class 
+
+- Java inner class or nested class is a class that is declared inside the class or interface.
+- We use inner classes to logically group classes and interfaces in one place to be more readable and maintainable.
+- Additionally, it can access all the members of the outer class, including private data members and methods.
+
+Ex: Sometimes we don't want a class to be accessed by any other classes that time we have to use the inner class concept. 
+
+>>> Static Inner/Nested class 
+
+- It can access static data members of the outer class including private 
+
+Example:
+
+public class StaticKeywordExample7OuterClass 
+{
+	public static String message = "Hello...";
+	static class StaticKeywordExample7InnerClass
+	{
+		static void displayMessage()
+		{
+			System.out.println("The message is : "+message);
+		}
+	}
+
+	public static void main(String[] args)
+	{
+		StaticKeywordExample7InnerClass.displayMessage();
+	}
+}
+
+Output:
+
+javac StaticKeywordExample7OuterClass.java
+java StaticKeywordExample7OuterClass
+
+The message is : Hello...
+
+Example: If we have any non-static method inside the inner static class, we have to create an object for that inner static class and access it non-static method. 
+
+public class StaticKeywordExample8OuterClass 
+{
+	public static String message = "Hello...";
+	static class StaticKeywordExample8InnerClass
+	{
+		void printMessage()
+		{
+			System.out.println("The message is : "+message);
+		}
+	}
+
+	public static void main(String[] args)
+	{
+		StaticKeywordExample8OuterClass.StaticKeywordExample8InnerClass obj = new StaticKeywordExample8OuterClass.StaticKeywordExample8InnerClass();
+		obj.printMessage();
+	}
+}
+
+Output:
+
+javac StaticKeywordExample8OuterClass.java
+java StaticKeywordExample8OuterClass
+
+The message is : Hello...
+
+
+
